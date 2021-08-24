@@ -52,13 +52,13 @@ addBtn.addEventListener("click", function(){
       let ticket = document.createElement("div")
       ticket.classList.add("ticket")
       ticket.innerHTML = `<div class="ticket-color ${color}"></div>
-      <div class="ticket-id"></div>
-      <div class="ticket-box" contenteditable>${task}</div>
-    </div>`;
+          <div class="ticket-id"></div>
+          <div class="ticket-box" contenteditable>${task}</div>
+        </div>`;
 
-    grid.appendChild(ticket)
-    modal.remove()
-    modalVisible = false
+      grid.appendChild(ticket)
+      modal.remove()
+      modalVisible = false
     }
   })
 
