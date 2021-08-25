@@ -53,7 +53,9 @@ addBtn.addEventListener("click", function(){
       ticket.classList.add("ticket")
       ticket.innerHTML = `<div class="ticket-color ${color}"></div>
           <div class="ticket-id"></div>
-          <div class="ticket-box" contenteditable>${task}</div>
+          <div class="ticket-box" contenteditable>
+            ${task}
+          </div>
         </div>`;
 
       grid.appendChild(ticket)
