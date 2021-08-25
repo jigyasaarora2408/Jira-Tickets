@@ -9,6 +9,25 @@ let colors = {
   green: "#91e6c7",
   black: "black",
 };
+let colorClasses = ["pink", "blue", "green", "black"];
+
+let deleteState = false;
+let deleteBtn = document.querySelector(".delete");
+
+//initialisation step
+if (!localStorage.getItem("tasks")) {
+  localStorage.setItem("tasks", JSON.stringify([]));
+}
+
+deleteBtn.addEventListener("click", function (e) {
+  if (deleteState) {
+    deleteState = false;
+    e.currentTarget.classList.remove("delete-state");
+  } else {
+    deleteState = true;
+    e.currentTarget.classList.add("delete-state");
+  }
+});
 
 
 addBtn.addEventListener("click", function(){
@@ -58,11 +77,39 @@ addBtn.addEventListener("click", function(){
           </div>
         </div>`;
 
+      saveTicketInLocalStorage(id, color, task);
+
+      let ticketWritingArea = ticket.querySelector(".ticket-box");
+  
+      ticketWritingArea.addEventListener("input", ticketWritingAreaHandler);
+  
+      ticket.addEventListener("click", function (e) {
+        let id = e.currentTarget
+          .querySelector(".ticket-id")
+          .innerText.split("#")[1];
+  
+        let tasksArr = JSON.parse(localStorage.getItem("tasks"));
+  
+        tasksArr = tasksArr.filter(function (el) {
+          return el.id != id;
+        });
+  
+        localStorage.setItem("tasks", JSON.stringify(tasksArr));
+  
+        if (deleteState) {
+          e.currentTarget.remove();
+        }
+      });
+  
+      let ticketColorDiv = ticket.querySelector(".ticket-color");
+  
+      ticketColorDiv.addEventListener("click", ticketColorHandler);
+
       grid.appendChild(ticket)
       modal.remove()
       modalVisible = false
     }
-  })
+  });
 
   body.appendChild(modal);
   modalVisible = true;
@@ -73,4 +120,56 @@ for (let i = 0; i < allFilters.length; i++) {
     let color = e.currentTarget.classList[0].split("-")[0];
     grid.style.backgroundColor = colors[color];
   });
+}
+
+function saveTicketInLocalStorage(id, color, task) {
+  let requiredObj = { id, color, task };
+  let tasksArr = JSON.parse(localStorage.getItem("tasks"));
+  tasksArr.push(requiredObj);
+  localStorage.setItem("tasks", JSON.stringify(tasksArr));
+}
+
+function ticketColorHandler(e) {
+  let id = e.currentTarget.parentElement
+    .querySelector(".ticket-id")
+    .innerText.split("#")[1];
+
+  let tasksArr = JSON.parse(localStorage.getItem("tasks"));
+  let reqIndex = -1;
+  for (let i = 0; i < tasksArr.length; i++) {
+    if (tasksArr[i].id == id) {
+      reqIndex = i;
+      break;
+    }
+  }
+
+  let currColor = e.currentTarget.classList[1];
+  let index = colorClasses.indexOf(currColor);
+  index++;
+  index = index % 4;
+  e.currentTarget.classList.remove(currColor);
+  e.currentTarget.classList.add(colorClasses[index]);
+  tasksArr[reqIndex].color = colorClasses[index];
+  localStorage.setItem("tasks", JSON.stringify(tasksArr));
+}
+
+function ticketWritingAreaHandler(e) {
+  let id = e.currentTarget.parentElement
+    .querySelector(".ticket-id")
+    .innerText.split("#")[1];
+  let tasksArr = JSON.parse(localStorage.getItem("tasks"));
+  let reqIndex = -1;
+  for (let i = 0; i < tasksArr.length; i++) {
+    if (tasksArr[i].id == id) {
+      reqIndex = i;
+      break;
+    }
+  }
+
+  tasksArr[reqIndex].task = e.currentTarget.innerText;
+  localStorage.setItem("tasks", JSON.stringify(tasksArr));
+}
+
+function loadTasks() {
+  let tasksArr = JSON.parse(localStorage.getItem("tasks"));
 }
